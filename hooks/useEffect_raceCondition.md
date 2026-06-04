@@ -84,7 +84,7 @@ function Counter() {
       setNum(num + 1);
     }, 1000);
     return () => clearInterval(id);
-  }, []);
+  }, [num]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -93,5 +93,29 @@ function Counter() {
   }, []);
 
   return <div>{num}</div>;
+}
+```
+Output
+After 2 sec -> 2
+After 3 sec-> 101
+
+
+Q.
+```
+function UserProfile({ userId }) {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch(`/api/users/${userId}`, { signal: controller.signal })
+      .then(res => res.json())
+      .then(setUser)
+      .catch(err => {
+        if (err.name !== 'AbortError') console.error(err);
+      });
+    return () => controller.abort();
+  }, [userId]);
+
+  return <div>{user?.name}</div>;
 }
 ```
